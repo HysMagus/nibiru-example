@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=./node_modules/envio/evm.schema.json
+name: envio-indexer
+networks:
+- id: 6900
+  rpc: https://evm-rpc.nibiru.fi
+  start_block: 27550796
+  contracts:
+  - name: PerpVaultEvmInterface
+    address:
+    - 0x4325decBA292DFC257adA19d37825834F96Bb26a
+    handler: src/EventHandlers.ts
+    events:
+    - event: DepositCollateral(address indexed sender, uint256 erc20Amount, string vaultAddress, string bankDenom, address bankAddress)
+    - event: OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
+    - event: PerpContractAddressChangeProposed(string indexed newAddress, uint256 effectiveTimestamp)
+    - event: PerpContractAddressChanged(string indexed oldAddress, string indexed newAddress)
+unordered_multichain_mode: true
+preload_handlers: true

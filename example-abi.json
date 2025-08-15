@@ -1,0 +1,610 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_initialPerpContractAddress",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_timelockDelay",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "erc20Amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "vaultAddress",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "bankDenom",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "bankAddress",
+        "type": "address"
+      }
+    ],
+    "name": "DepositCollateral",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "newAddress",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "effectiveTimestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "PerpContractAddressChangeProposed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "oldAddress",
+        "type": "string"
+      },
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "newAddress",
+        "type": "string"
+      }
+    ],
+    "name": "PerpContractAddressChanged",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "PRECISION",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "recipient",
+        "type": "string"
+      }
+    ],
+    "name": "_performSendToBank",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "recipient",
+        "type": "string"
+      }
+    ],
+    "name": "_performSendToEvm",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "contractAddress",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "msgExecute",
+        "type": "bytes"
+      },
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "denom",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct INibiruEvm.BankCoin[]",
+        "name": "funds",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "_performWasmExecute",
+    "outputs": [
+      {
+        "internalType": "bytes",
+        "name": "result",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "changeEffectiveTimestamp",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tradeId",
+        "type": "uint256"
+      }
+    ],
+    "name": "closeTradeMarket",
+    "outputs": [
+      {
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "wasmMsgExecute",
+        "type": "bytes"
+      },
+      {
+        "internalType": "uint256",
+        "name": "depositAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "useErc20Amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_vaultAddress",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "collateralAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "sendSharesToEvm",
+        "type": "bool"
+      }
+    ],
+    "name": "deposit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "executeNewPerpContractAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "wasmMsgExecute",
+        "type": "bytes"
+      }
+    ],
+    "name": "executeSimpleFunctions",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_vaultAddress",
+        "type": "string"
+      }
+    ],
+    "name": "getCollateralErc20AddressOfVault",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "collateralAddress",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "userBech32Address",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tradeId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getCollateralIndexOfTrade",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "collateralId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenIndex",
+        "type": "uint256"
+      }
+    ],
+    "name": "getDenomOfCollateralIndex",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_vaultAddress",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "wasmMsgExecute",
+        "type": "bytes"
+      },
+      {
+        "internalType": "uint256",
+        "name": "withdrawAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "useErc20Amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "makeWithdrawRequest",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "wasmMsgExecute",
+        "type": "bytes"
+      },
+      {
+        "internalType": "uint256",
+        "name": "collateralIndex",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tradeAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "useERC20Amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "openTrade",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pendingPerpContractAddress",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "perpContractAddress",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_newAddress",
+        "type": "string"
+      }
+    ],
+    "name": "proposeNewPerpContractAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "wasmMsgExecute",
+        "type": "bytes"
+      },
+      {
+        "internalType": "string",
+        "name": "_vaultAddress",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "redeemAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "sendCollateralToEvm",
+        "type": "bool"
+      }
+    ],
+    "name": "redeem",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "timelockDelay",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tradeIndex",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "newLeverage",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "collateralIndex",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "collateralAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "useErc20Amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateLeverage",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "wasmMsgUpdateTp",
+        "type": "bytes"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tradeIndex",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "newLeverage",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "collateralIndex",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "collateralAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "useErc20Amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateTpAndLeverage",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
